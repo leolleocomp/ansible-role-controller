@@ -1,2 +1,6 @@
 ---
-# defaults file for base
+# able to login via ssh into the machine
+admin_users: []
+
+# nologin users, used for management tasks
+system_users: []
