@@ -1,5 +1,19 @@
 ---
 - name: Converge
   hosts: all
+  pre_tasks:
+    - name: creates groups used in the role
+      group:
+        name: '{{ item }}'
+        state: present
+      with_items:
+        - admin
+        - adm
+        - lxd
+      become: yes
+
   roles:
-    - base
+    - role: base
+      admin_users:
+        - name: controller_admin
+          pubkey_file: files/controller_admin.pub
