@@ -4,8 +4,8 @@ dependency:
 driver:
   name: docker
 platforms:
-  - name: instance
-    image: leolleocompo/ubuntu
+  - name: Ubuntu
+    image: leolleocompo/ubuntu:18.04
     pre_build_image: true
 provisioner:
   name: ansible

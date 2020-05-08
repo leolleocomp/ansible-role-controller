@@ -1,2 +1,12 @@
 ---
-# tasks file for base
+- name: update package cache
+  apt:
+    update_cache: yes
+    force_apt_get: yes
+  become: yes
+
+- name: upgrade packages
+  apt:
+    upgrade: dist
+    force_apt_get: yes
+  become: yes

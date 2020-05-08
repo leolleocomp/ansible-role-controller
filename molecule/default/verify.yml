@@ -4,6 +4,13 @@
 - name: Verify
   hosts: all
   tasks:
-  - name: Example assertion
-    assert:
-      that: true
+    - name: outputs the packages listeds to update/upgrade
+      shell:
+        cmd: apt list --upgradable | wc -l
+      ignore_errors: yes
+      register: upgradables_count
+
+    - assert:
+        that:
+          - upgradables_count.rc == 0
+          - upgradables_count.stdout == '1'
