@@ -10,3 +10,15 @@
     upgrade: dist
     force_apt_get: yes
   become: yes
+
+- name: adds admin users with default password
+  user:
+    name: '{{ item.name }}'
+    password: 'iamadefaultpassworddontuseme'
+    groups:
+      - sudo
+      - adm
+      - admin
+      - lxd
+  with_items: '{{ admin_users }}'
+  when: (admin_users | length > 0)
