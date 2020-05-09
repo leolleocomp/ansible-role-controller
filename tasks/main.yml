@@ -5,12 +5,6 @@
     force_apt_get: yes
   become: yes
 
-- name: upgrade packages
-  apt:
-    upgrade: dist
-    force_apt_get: yes
-  become: yes
-
 - name: setup ssh config
   copy:
     src: sshd_config
