@@ -14,3 +14,27 @@
         that:
           - upgradables_count.rc == 0
           - upgradables_count.stdout == '1'
+
+    - name: gets platform current ip address
+      local_action:
+        module: shell
+        cmd: "docker inspect --format '{''{ .NetworkSettings.IPAddress }''}' Ubuntu"
+      register: platform_ip_address
+
+    - name: checks that user can ssh into platform instance
+      local_action:
+        module: shell
+        cmd: |
+          ssh \
+            -o "UserKnownHostsFile=/dev/null" \
+            -o "StrictHostKeyChecking=no" \
+            -i files/controller_admin \
+            -p 8008 \
+            controller_admin@{{ platform_ip_address.stdout }} whoami
+      register: remote_whoami
+      ignore_errors: yes
+
+    - assert:
+        that:
+          - remote_whoami.rc == 0
+          - remote_whoami.stdout == 'controller_admin'
