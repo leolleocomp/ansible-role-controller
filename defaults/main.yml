@@ -2,5 +2,8 @@
 # able to login via ssh into the machine
 admin_users: []
 
-# nologin users, used for management tasks
-system_users: []
+# system agent
+# - Their keys are kept on the machine
+# - Its password is hidden
+# - Can go SUDO without password
+system_agents: []
