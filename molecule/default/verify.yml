@@ -27,3 +27,15 @@
         that:
           - remote_whoami.rc == 0
           - remote_whoami.stdout == 'controller_admin'
+
+    - name: checks that a system_agent can sudo without password
+      shell:
+        cmd: sudo --non-interactive cat /etc/sudoers
+      become_user: controller_agent
+      become: yes
+      ignore_errors: yes
+      register: system_agent_sudo_cat
+
+    - assert:
+        that:
+          - system_agent_sudo_cat.rc == 0

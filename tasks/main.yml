@@ -5,6 +5,28 @@
     force_apt_get: yes
   become: yes
 
+- name: allows system agents to sudo without password
+  group:
+    name: system-agent
+    state: present
+    system: yes
+  become: yes
+
+- name: adds sudoers file
+  copy:
+    src: sudoers
+    dest: /etc/sudoers
+  become: yes
+
+- name: creates system_agent users
+  user:
+    name: '{{ item.name }}'
+    group: system-agent
+    system: yes
+    generate_ssh_key: yes
+    update_password: on_create
+  with_items: '{{ system_agents }}'
+
 - name: setup ssh config
   copy:
     src: sshd_config

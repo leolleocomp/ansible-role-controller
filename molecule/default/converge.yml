@@ -18,6 +18,8 @@
         - name: controller_admin
           password: $6$salagosto$24o95HxJaaU/e/jb8sMoIUsa6HtLw/N7Ha5BxJ1XgDXZJLMjyKx9EGiAWrgdLoAWjVgBCuwME1URqoz9fu4oh/
           pubkey_file: files/controller_admin.pub
+      system_agents:
+        - name: controller_agent
 
   tasks:
     - name: starts ssh
