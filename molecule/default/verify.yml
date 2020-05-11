@@ -39,3 +39,8 @@
     - assert:
         that:
           - system_agent_sudo_cat.rc == 0
+
+    - name: sanity check for ansible installation
+      shell:
+        cmd: ansible --version
+      register: ansible_version

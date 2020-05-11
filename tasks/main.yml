@@ -5,6 +5,23 @@
     force_apt_get: yes
   become: yes
 
+- name: install ansible dependencies
+  apt:
+    name: software-properties-common
+    state: present
+  become: yes
+
+- name: set up ansible ppa
+  apt_repository:
+    repo: ppa:ansible/ansible
+  become: yes
+
+- name: installs ansible
+  apt:
+    name: ansible
+    state: present
+  become: yes
+
 - name: allows system agents to sudo without password
   group:
     name: system-agent

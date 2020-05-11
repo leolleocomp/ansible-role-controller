@@ -13,7 +13,7 @@
       become: yes
 
   roles:
-    - role: base
+    - role: ansible_controller
       admin_users:
         - name: controller_admin
           password: $6$salagosto$24o95HxJaaU/e/jb8sMoIUsa6HtLw/N7Ha5BxJ1XgDXZJLMjyKx9EGiAWrgdLoAWjVgBCuwME1URqoz9fu4oh/
