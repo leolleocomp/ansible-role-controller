@@ -9,6 +9,7 @@
 Defaults	env_reset
 Defaults	mail_badpass
 Defaults	secure_path="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin"
+Defaults!/usr/bin/ansible* always_set_home
 
 # Host alias specification
 
@@ -25,11 +26,11 @@ root	ALL=(ALL:ALL) ALL
 # Allow members of group sudo to execute any command
 %sudo	ALL=(ALL:ALL) ALL
 
-# Allow clients to run any ansible command as agent user
+# Allow clients to run any ansible command as agent user without password
 
 {% for client in controller_clients %}
-{{ client.name }} ALL=({{ client.name }}-agent) /usr/bin/ansible*
-{% endfor %}}
+{{ client.name }} ALL=({{ client.name }}-agent) NOPASSWD: /usr/bin/ansible-playbook
+{% endfor %}
 
 # See sudoers(5) for more information on "#include" directives:
 

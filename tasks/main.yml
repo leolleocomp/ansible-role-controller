@@ -22,27 +22,70 @@
     state: present
   become: yes
 
-- name: allows system agents to sudo without password
-  group:
-    name: system-agent
-    state: present
-    system: yes
+- name: setups default umask
+  lineinfile:
+    path: '{{ item }}'
+    line: umask 027
+  with_items:
+    - /etc/profile
+    - /etc/bash.bashrc
   become: yes
 
-- name: adds sudoers file
-  copy:
-    src: sudoers
-    dest: /etc/sudoers
+- name: setups default umask for ssh login
+  lineinfile:
+    path: /etc/pam.d/common-session
+    regexp: '^session optional\s+pam_umask.so'
+    line: 'session optional pam_umask.so=0027'
   become: yes
 
-- name: creates system_agent users
+- name: ensures default umask compliant home dir for users
+  file:
+    path: /etc/skel
+    mode: g-w,o-rwx
+    recurse: yes
+    state: directory
+  become: yes
+
+- name: creates client users
   user:
     name: '{{ item.name }}'
-    group: system-agent
+    update_password: on_create
+  with_items: '{{ controller_clients }}'
+  become: yes
+
+- name: creates client users agents
+  user:
+    name: '{{ item.name }}-agent'
+    group: '{{ item.name }}'
     system: yes
     generate_ssh_key: yes
     update_password: on_create
-  with_items: '{{ system_agents }}'
+  with_items: '{{ controller_clients }}'
+  become: yes
+
+- name: sets umask value for each client user agent
+  lineinfile:
+    path: /home/{{ item.name }}-agent/.profile
+    regexp: '^#umask'
+    line: umask 077
+  with_items: '{{ controller_clients }}'
+  become: yes
+
+- name: sets up agent permissions on home folders and files, everything should be kept exclusively for the agent user
+  file:
+    path: /home/{{ item.name }}-agent
+    mode: g-rwx,o-rwx
+    recurse: yes
+    state: directory
+  with_items: '{{ controller_clients }}'
+  become: yes
+
+- name: adds sudoers file
+  template:
+    src: sudoers.j2
+    dest: /etc/sudoers
+    validate: visudo -cf %s
+  become: yes
 
 - name: setup ssh config
   copy:
@@ -63,10 +106,12 @@
   when: (admin_users | length > 0)
   become: yes
 
-- name: adds authorized key for each admin_user
+- name: adds authorized key for each admin_user and controller_client
   authorized_key:
     user: '{{ item.name }}'
     key: "{{ lookup('file', item.pubkey_file) }}"
     state: present
-  with_items: '{{ admin_users }}'
+  with_flattened:
+    - '{{ admin_users }}'
+    - '{{ controller_clients }}'
   become: yes

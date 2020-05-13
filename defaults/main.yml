@@ -12,13 +12,12 @@ admin_users: []
 # - acts with the related agent to automate stuff using ansible
 # - intended to be used by pipeline deliver/deploy stages
 #
-controller_clients: []
-
-# System Agents
+# For each client there will be created a System Agent, where:
 #
+# - It's identifyed as <client_name>-agent
 # - Their keys are kept on the machine
 # - Its password is hidden
 # - Keep automation secrets to itself
 # - Only they can trigger automation on behalf of the client
 #
-controller_agents: []
+controller_clients: []

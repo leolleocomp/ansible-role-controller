@@ -1,6 +1,4 @@
 ---
-# This is an example playbook to execute Ansible tests.
-
 - name: Verify
   hosts: all
   tasks:
@@ -28,19 +26,57 @@
           - remote_whoami.rc == 0
           - remote_whoami.stdout == 'controller_admin'
 
-    - name: checks that a system_agent can sudo without password
+    - name: checks that alice can run ansible-playbook as alice-agent without errors
       shell:
-        cmd: sudo --non-interactive cat /etc/sudoers
-      become_user: controller_agent
+        cmd: sudo -u alice-agent ansible-playbook --version
+      register: alice_sudo_playbook_output
       become: yes
+      become_user: alice
       ignore_errors: yes
-      register: system_agent_sudo_cat
 
     - assert:
         that:
-          - system_agent_sudo_cat.rc == 0
+            - alice_sudo_playbook_output.rc == 0
 
-    - name: sanity check for ansible installation
+    - name: checks that alice cant run ansible command as alice-agent
       shell:
-        cmd: ansible --version
-      register: ansible_version
+        cmd: sudo -n -u alice-agent ansible --version
+      become: yes
+      become_user: alice
+      register: alice_sudo_ansible_output
+      ignore_errors: yes
+
+    - assert:
+        that:
+          - alice_sudo_ansible_output.rc != 0
+        fail_msg: |
+          allowing alice to run ansible would allow her
+          to read files with possible ansible-agent specific secrets
+          or other sensitive data
+
+    - name: checks that alice cant read .profile nor .bashrc of alice-agent
+      shell:
+        cmd: cat /home/alice-agent/{{ item }}
+      with_items:
+        - .profile
+        - .bashrc
+      register: alice_strictly_forbidden_files_contents
+      become: yes
+      become_user: alice
+      ignore_errors: yes
+
+    - assert:
+        that:
+          -  item.rc != 0
+      with_items: '{{ alice_strictly_forbidden_files_contents.results }}'
+
+    - name: check that alice can\'t read bob\'s directory contents
+      shell:
+        cmd: ls -l /home/bob
+      register: alices_view_of_bob_home_dir
+      become: yes
+      become_user: alice
+
+    - assert:
+        that:
+          - alices_view_of_bob_home_dir.rc != 0
