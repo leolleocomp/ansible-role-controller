@@ -49,7 +49,7 @@
   lineinfile:
     path: /etc/login.defs
     regexp: '^UMASK'
-    line: 'UMASK=027'
+    line: 'UMASK 027'
   become: yes
 
 - name: ensures default umask compliant home dir for users

@@ -76,6 +76,7 @@
       register: alices_view_of_bob_home_dir
       become: yes
       become_user: alice
+      ignore_errors: yes
 
     - assert:
         that:
