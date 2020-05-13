@@ -22,11 +22,14 @@ root	ALL=(ALL:ALL) ALL
 # Members of the admin group may gain root privileges
 %admin ALL=(ALL) ALL
 
-# Members of system-agent group may sudo without password
-%system-agent ALL=(ALL) NOPASSWD: ALL
-
 # Allow members of group sudo to execute any command
 %sudo	ALL=(ALL:ALL) ALL
+
+# Allow clients to run any ansible command as agent user
+
+{% for client in controller_clients %}
+{{ client.name }} ALL=({{ client.name }}-agent) /usr/bin/ansible*
+{% endfor %}}
 
 # See sudoers(5) for more information on "#include" directives:
 
