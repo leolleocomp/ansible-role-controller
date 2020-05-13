@@ -38,6 +38,20 @@
     line: 'session optional pam_umask.so=0027'
   become: yes
 
+- name: ensures new users home dir are set with previously set umask like permissions if using adduser
+  lineinfile:
+    path: /etc/adduser.conf
+    regexp: '^DIR_MODE'
+    line: 'DIR_MODE=0750'
+  become: yes
+
+- name: ensures new users home dir are set with same default umask used by the system
+  lineinfile:
+    path: /etc/login.defs
+    regexp: '^UMASK'
+    line: 'UMASK=027'
+  become: yes
+
 - name: ensures default umask compliant home dir for users
   file:
     path: /etc/skel
