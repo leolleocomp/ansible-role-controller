@@ -1,9 +1,24 @@
 ---
-# able to login via ssh into the machine
+# Admin Users
+#
+# - able to login via ssh into the machine
+# - Machine human skilled administrators
+#
 admin_users: []
 
-# system agent
+# Controller Clients
+#
+# - able to do wathever they want in their home directory (obviously)
+# - acts with the related agent to automate stuff using ansible
+# - intended to be used by pipeline deliver/deploy stages
+#
+controller_clients: []
+
+# System Agents
+#
 # - Their keys are kept on the machine
 # - Its password is hidden
-# - Can go SUDO without password
-system_agents: []
+# - Keep automation secrets to itself
+# - Only they can trigger automation on behalf of the client
+#
+controller_agents: []
