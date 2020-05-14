@@ -117,7 +117,6 @@
       - admin
       - lxd
   with_items: '{{ admin_users }}'
-  when: (admin_users | length > 0)
   become: yes
 
 - name: adds authorized key for each admin_user and controller_client
