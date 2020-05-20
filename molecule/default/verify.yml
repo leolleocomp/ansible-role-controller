@@ -3,13 +3,13 @@
   hosts: all
   tasks:
     - name: gets platform current ip address
-      local_action:
+      local_action: # noqa 301 504
         module: shell
         cmd: "docker inspect --format '{''{ .NetworkSettings.IPAddress }''}' Ubuntu"
       register: platform_ip_address
 
-    - name: checks that user can ssh into platform instance
-      local_action:
+    - name: ssh into platform instance
+      local_action: # noqa 301 504
         module: shell
         cmd: |
           ssh \
@@ -21,32 +21,35 @@
       register: remote_whoami
       ignore_errors: yes
 
-    - assert:
+    - name: checks that user can ssh into platform instance
+      assert:
         that:
           - remote_whoami.rc == 0
           - remote_whoami.stdout == 'controller_admin'
 
-    - name: checks that alice can run ansible-playbook as alice-agent without errors
-      shell:
+    - name: run ansible-playbook as alice-agent
+      command: # noqa 301
         cmd: sudo -u alice-agent ansible-playbook --version
       register: alice_sudo_playbook_output
       become: yes
       become_user: alice
       ignore_errors: yes
 
-    - assert:
+    - name: checks that alice can run ansible-playbook as alice-agent without errors
+      assert:
         that:
             - alice_sudo_playbook_output.rc == 0
 
-    - name: checks that alice cant run ansible command as alice-agent
-      shell:
+    - name: run ansible command as alice-agent
+      command: # noqa 301
         cmd: sudo -n -u alice-agent ansible --version
       become: yes
       become_user: alice
       register: alice_sudo_ansible_output
       ignore_errors: yes
 
-    - assert:
+    - name: checks that alice cant run ansible command as alice-agent
+      assert:
         that:
           - alice_sudo_ansible_output.rc != 0
         fail_msg: |
@@ -54,8 +57,8 @@
           to read files with possible ansible-agent specific secrets
           or other sensitive data
 
-    - name: checks that alice cant read .profile nor .bashrc of alice-agent
-      shell:
+    - name: alice tries to read .profile and .bashrc of alice-agent
+      command: # noqa 301
         cmd: cat /home/alice-agent/{{ item }}
       with_items:
         - .profile
@@ -65,19 +68,21 @@
       become_user: alice
       ignore_errors: yes
 
-    - assert:
+    - name: checks that alice cant read .profile nor .bashrc of alice-agent
+      assert:
         that:
-          -  item.rc != 0
+          - item.rc != 0
       with_items: '{{ alice_strictly_forbidden_files_contents.results }}'
 
-    - name: check that alice can\'t read bob\'s directory contents
-      shell:
+    - name: alice tries to read read bob\'s directory contents
+      command: # noqa 301
         cmd: ls -l /home/bob
       register: alices_view_of_bob_home_dir
       become: yes
       become_user: alice
       ignore_errors: yes
 
-    - assert:
+    - name: check that alice can\'t read bob\'s directory contents
+      assert:
         that:
           - alices_view_of_bob_home_dir.rc != 0
