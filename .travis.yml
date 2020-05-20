@@ -6,5 +6,6 @@ before_install:
   - sudo apt-get -qq update
 install:
   - pip install -r requirements.txt
+  - suto apt-get install -y ssh
 script:
   - molecule test
