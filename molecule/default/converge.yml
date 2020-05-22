@@ -27,7 +27,7 @@
         - name: controller_agent
 
   tasks:
-    - name: starts sshd
+    - name: starts ssh
       service:
-        name: sshd
+        name: ssh
         state: started
