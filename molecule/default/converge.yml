@@ -16,7 +16,8 @@
       file:
         path: files
         state: directory
-        mode: '0600'
+        mode: g-rwx,o-rwx
+        recurse: yes
       delegate_to: localhost
 
   roles:
