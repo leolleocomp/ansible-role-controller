@@ -13,7 +13,7 @@
       become: yes
 
     - name: ensures right mode on ssh key files
-      local_action:
+      local_action: #noqa 504
         module: file
         path: files
         state: directory
