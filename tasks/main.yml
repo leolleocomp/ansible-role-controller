@@ -30,13 +30,6 @@
     - /etc/bash.bashrc
   become: yes
 
-- name: setups default umask for ssh login
-  lineinfile:
-    path: /etc/pam.d/common-session
-    regexp: '^session optional\s+pam_umask.so'
-    line: 'session optional pam_umask.so=0027'
-  become: yes
-
 - name: ensures new users home dir are set with previously set umask like permissions if using adduser
   lineinfile:
     path: /etc/adduser.conf
