@@ -52,6 +52,15 @@
     state: directory
   become: yes
 
+- name: ensures fancy bash configuration for users
+  copy:
+    src: bashrc
+    dest: /etc/skel/.bashrc
+    user: root
+    owner: root
+    mode: u=rw,g=r
+  become: yes
+
 - name: creates client users
   user:
     name: '{{ item.name }}'
