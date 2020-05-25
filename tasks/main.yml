@@ -65,6 +65,7 @@
   user:
     name: '{{ item.name }}'
     update_password: on_create
+    shell: /bin/bash
   with_items: '{{ controller_clients }}'
   become: yes
 
@@ -75,6 +76,7 @@
     system: yes
     generate_ssh_key: yes
     update_password: on_create
+    shell: /bin/bash
   with_items: '{{ controller_clients }}'
   become: yes
 
@@ -112,6 +114,7 @@
   user:
     name: '{{ item.name }}'
     password: '{{ item.password }}'
+    shell: /bin/bash
     groups:
       - sudo
       - adm
