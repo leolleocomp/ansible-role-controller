@@ -56,8 +56,8 @@
   copy:
     src: bashrc
     dest: /etc/skel/.bashrc
-    user: root
     owner: root
+    group: root
     mode: u=rw,g=r
   become: yes
 
