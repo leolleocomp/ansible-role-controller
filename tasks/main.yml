@@ -2,7 +2,6 @@
 - name: update package cache
   apt:
     update_cache: yes
-    force_apt_get: yes
   become: yes
 
 - name: install ansible dependencies
