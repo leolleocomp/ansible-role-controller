@@ -115,6 +115,7 @@
     name: '{{ item.name }}'
     password: '{{ item.password }}'
     shell: /bin/bash
+    update_password: on_create
     groups:
       - sudo
       - adm
