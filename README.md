@@ -1,4 +1,4 @@
-Role Name [![Build Status](https://travis-ci.com/leolleocomp/ansible-role-controller.svg?branch=master)](https://travis-ci.com/leolleocomp/ansible-role-controller)
+Role Name [![Build Status](https://travis-ci.com/leolleocomp/ansible-role-users.svg?branch=master)](https://travis-ci.com/leolleocomp/ansible-role-users)
 =========
 
 TODO.
