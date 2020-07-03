@@ -12,6 +12,7 @@
       local_action: # noqa 301 504
         module: shell
         cmd: |
+          ANSIBLE_HOST_KEY_CHECKING=false \
           ssh \
             -o "UserKnownHostsFile=/dev/null" \
             -o "StrictHostKeyChecking=no" \

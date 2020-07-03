@@ -12,6 +12,14 @@
         - lxd
       become: yes
 
+    - name: ensures right mode on ssh key files
+      file:
+        path: files
+        state: directory
+        mode: g-rwx,o-rwx
+        recurse: yes
+      delegate_to: localhost
+
   roles:
     - role: users
       admin_users:

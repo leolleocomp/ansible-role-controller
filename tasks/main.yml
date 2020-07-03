@@ -25,13 +25,6 @@
     - /etc/bash.bashrc
   become: yes
 
-- name: setups default umask for ssh login
-  lineinfile:
-    path: /etc/pam.d/common-session
-    regexp: '^session optional\s+pam_umask.so'
-    line: 'session optional pam_umask.so=0027'
-  become: yes
-
 - name: ensures new users home dir are set with previously set umask like permissions if using adduser
   lineinfile:
     path: /etc/adduser.conf
@@ -54,10 +47,20 @@
     state: directory
   become: yes
 
+- name: ensures fancy bash configuration for users
+  copy:
+    src: bashrc
+    dest: /etc/skel/.bashrc
+    owner: root
+    group: root
+    mode: u=rw,g=r
+  become: yes
+
 - name: creates client users
   user:
     name: '{{ item.name }}'
     update_password: on_create
+    shell: /bin/bash
   with_items: '{{ controller_clients }}'
   become: yes
 
@@ -68,6 +71,7 @@
     system: yes
     generate_ssh_key: yes
     update_password: on_create
+    shell: /bin/bash
   with_items: '{{ controller_clients }}'
   become: yes
 
@@ -105,6 +109,8 @@
   user:
     name: '{{ item.name }}'
     password: '{{ item.password }}'
+    shell: /bin/bash
+    update_password: on_create
     groups:
       - sudo
       - adm
